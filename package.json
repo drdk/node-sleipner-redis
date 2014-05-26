@@ -1,0 +1,23 @@
+{
+  "name": "sleipner-js-redis",
+  "version": "0.0.1",
+  "description": "A Sleipner cache provider using Memcached\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "sleipner",
+    "node",
+    "redis",
+    "cache"
+  ],
+  "author": "Nicolai Persson",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "coffee-script": "~1.7.1",
+    "generic-pool": "^2.0.4",
+    "hiredis": "^0.1.16",
+    "redis": "^0.10.3"
+  }
+}
