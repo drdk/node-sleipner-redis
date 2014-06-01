@@ -2,7 +2,9 @@ redis = require("haredis")
 
 module.exports = exports = class
   constructor: (hosts, timeout = 1250) ->
-    @logger  = console
+    @owner =
+      logger: console
+
     @timeout = parseInt(timeout, 10) || 1250
 
     hosts ||= ["127.0.0.1"]
@@ -14,14 +16,10 @@ module.exports = exports = class
 
     @client = redis.createClient(hosts, detect_buffers: yes)
 
-    @logger.log "Redis client with hosts", hosts
-
-  setOwner: (owner) =>
-    @owner  = owner
-    @logger = @owner.log
+    @owner.logger.log "Redis client with hosts", hosts
 
   get: (key, cb) ->
-    logger    = @logger
+    logger    = @owner.logger
     timeoutMs = @timeout
 
     returned = no
@@ -43,7 +41,7 @@ module.exports = exports = class
 
   set: (key, value, expires = 0) ->
     # We don't care about expiry ATM
-    logger  = @logger
+    logger  = @owner.logger
 
     @client.set key, value, (error, status) ->
       logger.error "!! Redis provider SET failed: #{error.toString()}" if error
