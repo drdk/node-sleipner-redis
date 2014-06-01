@@ -17,6 +17,6 @@
   "dependencies": {
     "coffee-script": "~1.7.1",
     "generic-pool": "^2.0.4",
-    "redis": "^0.10.3"
+    "haredis": "^0.2.15"
   }
 }
