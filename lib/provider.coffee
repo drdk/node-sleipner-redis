@@ -1,7 +1,7 @@
 redis = require("haredis")
 
 module.exports = exports = class
-  constructor: (hosts, timeout = 1250) ->
+  constructor: (hosts, timeout = 1250, disableHARedisLogging = no) ->
     @owner =
       logger: console
 
@@ -14,9 +14,15 @@ module.exports = exports = class
       host = "#{host}:6379" unless host.indexOf(":") isnt -1
       hosts[i] = host
 
+    dummyFn = ->
+
     @client = redis.createClient(hosts, detect_buffers: yes)
 
-    @owner.logger.log "Redis client with hosts", hosts
+    if disableHARedisLogging
+      @client.debug = dummyFn
+      @client.info  = dummyFn
+      @client.warn  = dummyFn
+      @client.error = dummyFn
 
   get: (key, cb) ->
     logger    = @owner.logger
