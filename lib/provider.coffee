@@ -1,24 +1,29 @@
 redis = require("haredis")
 
 module.exports = exports = class
-  constructor: (hosts, timeout = 1250, disableHARedisLogging = no) ->
+  constructor: (options = {}) ->
     @owner =
       logger: console
 
-    @timeout = parseInt(timeout, 10) || 1250
+    @timeout = if options.timeout? then parseInt(options.timeout, 10) else 1250
 
-    hosts ||= ["127.0.0.1"]
-    hosts   = [hosts] unless hosts instanceof Array
+    options.disableHARedisLogging = if options.disableHARedisLogging? then options.disableHARedisLogging else false
 
-    for host, i in hosts
+    options.hosts ||= ["127.0.0.1"]
+    options.hosts   = [options.hosts] unless options.hosts instanceof Array
+
+    for host, i in options.hosts
       host = "#{host}:6379" unless host.indexOf(":") isnt -1
-      hosts[i] = host
+      options.hosts[i] = host
 
-    dummyFn = ->
+    redis.debug_mode = true
+    @client = redis.createClient(options.hosts, detect_buffers: yes)
 
-    @client = redis.createClient(hosts, detect_buffers: yes)
+    if options.auth?
+      authCallback = if options.authCallback? then options.authCallback else null
+      @client.auth(options.auth, authCallback)
 
-    if disableHARedisLogging
+    if options.disableHARedisLogging
       @client.debug = dummyFn
       @client.info  = dummyFn
       @client.warn  = dummyFn
@@ -51,3 +56,5 @@ module.exports = exports = class
 
     @client.set key, value, (error, status) ->
       logger.error "!! Redis provider SET failed: #{error.toString()}" if error
+
+  dummyFn = ->
