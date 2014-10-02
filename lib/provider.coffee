@@ -8,6 +8,7 @@ module.exports = exports = class
     @timeout = if options.timeout? then parseInt(options.timeout, 10) else 1250
 
     options.disableHARedisLogging = if options.disableHARedisLogging? then options.disableHARedisLogging else false
+    options.debug = options.debug? and options.debug is true
 
     options.hosts ||= ["127.0.0.1"]
     options.hosts   = [options.hosts] unless options.hosts instanceof Array
@@ -16,8 +17,9 @@ module.exports = exports = class
       host = "#{host}:6379" unless host.indexOf(":") isnt -1
       options.hosts[i] = host
 
-    redis.debug_mode = true
     @client = redis.createClient(options.hosts, detect_buffers: yes)
+
+    redis.debug_mode = options.debug
 
     if options.auth?
       authCallback = if options.authCallback? then options.authCallback else null
