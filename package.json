@@ -1,6 +1,6 @@
 {
   "name": "sleipner-js-redis",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Sleipner cache provider using Memcached\"",
   "main": "index.js",
   "scripts": {
